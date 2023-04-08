@@ -16,8 +16,15 @@ VERSION = "1.0.0"
 def read_current_voltage_continuously(
         destination_pkl_file: str,
         measurement_period_s: float,
-        measurement_duration: datetime.timedelta = None
+        measurement_duration: datetime.timedelta = None,
+        do_plot=False
 ) -> pandas.DataFrame:
+    """
+    Continually read current and voltage from the device.
+    Then the measurement duration elapses, or the script is cancelled with a Ctrl+C,
+    the data is written to the file [destination_pkl_file], and, if [do_plot] is set to True,
+    the data is plotted.
+    """
     times = []
     voltages_V = []
     currents_A = []
@@ -46,6 +53,7 @@ def read_current_voltage_continuously(
 
             if measurement_period_s > 0.0:
                 time.sleep(measurement_period_s)
+
     finally:
         # save data to file
         values = pandas.DataFrame(data={
@@ -62,6 +70,9 @@ def read_current_voltage_continuously(
         with open(destination_pkl_file, 'wb') as f:
             pickle.dump(data, f)
         logger.info(f"Data written to file {destination_pkl_file}")
+
+        if do_plot:
+            plot_current_voltage_data(data)
     return data
 
 
@@ -120,13 +131,15 @@ if __name__ == "__main__":
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--record_iv", "-r",
                        dest="record_iv",
-                       metavar=("DESTINATION_FILE", "PERIOD_S", "DURATION"),
-                       nargs=3,
+                       metavar=("DESTINATION_FILE", "PERIOD_S",
+                                "DURATION", "DO_PLOT"),
+                       nargs=4,
                        help="""
                        Record the current and voltage for a certain duration, save it, and plot it.
                        Data is written to a pandas DataFrame that is pickled to [DESTINATION_FILE].
                        A measurement is made every [PERIOD_S].
-                       If [DURATION] is set to 0, then the measurement continue indefinitely.  If it is a number, it is interpreted to be a number of seconds.""")
+                       If [DURATION] is set to 0, then the measurement continue indefinitely.  If it is a number, it is interpreted to be a number of seconds.
+                       If [DO_PLOT] is 1 then a plot is also generated.""")
     group.add_argument("--plot_iv", "-p",
                        dest="plot_iv",
                        metavar=("DATA_FILE"),
@@ -138,7 +151,8 @@ if __name__ == "__main__":
     setup_logging("tenma_psu.log", logger)
 
     if args.record_iv is not None:
-        destination_file, period_s_str, duration_str = args.record_iv
+        destination_file, period_s_str, duration_str, do_plot_str = args.record_iv
+        do_plot = do_plot_str == "1"
         period_s = float(period_s_str)
         try:
             duration_s = float(duration_str)
@@ -152,7 +166,8 @@ if __name__ == "__main__":
         data = read_current_voltage_continuously(
             destination_file,
             measurement_period_s=period_s,
-            measurement_duration=measurement_duration
+            measurement_duration=measurement_duration,
+            do_plot=do_plot
         )
         plot_current_voltage_data(data)
     elif args.plot_iv is not None:
