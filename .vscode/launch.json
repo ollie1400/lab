@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: lab.tenma_psu --record_iv",
+            "type": "python",
+            "request": "launch",
+            "module": "lab.tenma_psu",
+            "justMyCode": false,
+            "args": [
+                "-r",
+                "_temp/test.pkl",
+                "2",
+                "0"
+            ]
+        },
+        {
+            "name": "Python: lab.tenma_psu --plot_iv",
+            "type": "python",
+            "request": "launch",
+            "module": "lab.tenma_psu",
+            "justMyCode": false,
+            "args": [
+                "-p",
+                "_temp/test.pkl"
+            ]
+        }
+    ]
+}
