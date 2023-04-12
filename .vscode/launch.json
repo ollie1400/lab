@@ -5,6 +5,37 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: lab.picoscope_utils --record_trace",
+            "type": "python",
+            "request": "launch",
+            "module": "lab.picoscope_utils",
+            "justMyCode": false,
+            "args": [
+                "-r",
+                "asd"
+            ]
+        },
+        {
+            "name": "Python: lab.picoscope_utils --flash_led",
+            "type": "python",
+            "request": "launch",
+            "module": "lab.picoscope_utils",
+            "justMyCode": false,
+            "args": [
+                "-f"
+            ]
+        },
+        {
+            "name": "Python: lab.picoscope_utils --list_devices",
+            "type": "python",
+            "request": "launch",
+            "module": "lab.picoscope_utils",
+            "justMyCode": false,
+            "args": [
+                "-l"
+            ]
+        },
+        {
             "name": "Python: lab.tenma_psu --record_iv",
             "type": "python",
             "request": "launch",
